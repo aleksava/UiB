@@ -5,6 +5,12 @@ read -p "Event name please: " EVENT
 
 num=$(grep $EVENT $1 | cut -d " " -f2)
 
+#declare -i tall
+#grep $input hendelse.logg | cut -f 2 | while read line; do
+#tall+=line
+#done
+#echo $tall
+
 totalFor=0
 
 if [ ${#num} -eq 1 ]; then
