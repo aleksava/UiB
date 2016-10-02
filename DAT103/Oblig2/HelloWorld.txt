@@ -1,0 +1,13 @@
+In the command line: 
+  nasm  -f                      select an output format
+  nasm  -F                      select a debugging format
+  nasm  -g                      generate debug information in selected format
+  ld    -m EMULATION            Set emulation
+  ld    -o FILE, --output FILE  Set output file name
+  gdb   --tui                   Use a terminal as user interface
+
+In gdb:
+  Layout regs   Displays register window
+  b _start      Set breakpoint at _start
+  r             Start debugged program
+  s             Step program until it reaches a different source line
