@@ -66,10 +66,10 @@ skrivsiffer:
  mov ebx,STDOUT
  mov eax,SYS_WRITE
  int 80h
- push edx
- push ecx
- push ebx
- push eax
+ pop edx
+ pop ecx
+ pop ebx
+ pop eax
  ret
 ; ---------------------------------------------------------
 lessiffer:
