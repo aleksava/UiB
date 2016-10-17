@@ -1,0 +1,26 @@
+nasm -f elf -F dwarf filename.asm
+
+nasm -f format			select an output format 
+nasm -F format			select a debugging format
+nasm -g 				genereate debug information in selected format
+
+elf (executable and linkable format) 
+dwarf (debugging data format)
+	Makes the file debuggable with gdb
+
+ld -m elf_i1386 -o filename filename.o
+
+ld -m EMULATION				Set emulation 
+ld -o FILE, --output FILE	Set output file name
+
+elf_i1386 makes a 32-bits executable file  
+
+
+gdb -tui				Use a terminal user interface
+
+In gdb:
+	Layout regs 		Display register window
+	b _start 	 		Set breakpoint at _start
+	r 			 		Start debugged program
+	s 					Step program until it reaches a different source line
+	
