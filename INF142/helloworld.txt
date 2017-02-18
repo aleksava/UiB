@@ -1,0 +1,50 @@
+C-g Quit
+C-x C-x Exit
+C-x C-f Open/"visit" a file
+C-x k kill the buffer representing a file... not deleting a file
+
+C-f move forward one character
+C-b move back
+M-f move forward one word
+M-b move back one word
+
+C-d Delete a character
+M-d Delete a word
+C-_ Undo
+
+C-p Previous line / up
+C-n Next line / down
+C-a Move to beginning of line
+C-e Move to end of line
+
+M-< Beginning of the buffer
+M-> End of file
+C-v Page down
+M-v Page up
+C-l Center the screen
+
+C-x 2 Split top/bottom
+C-x o Other window
+C-x 3 Split left/right
+C-x 1 Remove all windows - simplify life
+
+Search
+C-s text <--- search
+C-s Text <--- Case sensitive search
+
+Save
+C-x C-s Save document
+
+C-space <--- Start / toggle marking a region
+
+M-w Copy
+C-y Yank / paste
+C-w Cut
+C-k Kill to end of line (Goes to yank)
+
+M-x Query-replace
+M-%
+M-$ Spell check word (Need ispell, don't have it)
+M-x flyspell-mode 
+
+M-x shell <--- start a bash command line
