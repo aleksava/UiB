@@ -6,7 +6,7 @@ import java.util.Date;
 
 class Server {
 
-    static final int aPort = 1978;
+    static final int PORT = 1978;
     
     public static void main(String[] args) throws IOException {
 	ServerSocket serverSocket = null;
@@ -14,7 +14,7 @@ class Server {
 
 	// Create welcoming socket at port PORT
 	try {
-	    serverSocket = new ServerSocket(aPort);
+	    serverSocket = new ServerSocket(PORT);
 	}
 	catch(IOException e) {
 	    e.printStackTrace();
@@ -25,7 +25,7 @@ class Server {
 	    try {
 		connectionSocket = serverSocket.accept();
 		String clientID =  connectionSocket.getInetAddress().getHostName();
-		System.out.println("Connection received from: " + clientID);
+		System.out.println("Connection received from: " + clientID + "\n");
 	    }
 	    catch(IOException e) {
 		e.printStackTrace();
@@ -33,8 +33,7 @@ class Server {
 
 	    // New thread for a client
 	    new EchoClient(connectionSocket).start();
-	    
+
 	} // End of while
-	
     } // End of main
 }
