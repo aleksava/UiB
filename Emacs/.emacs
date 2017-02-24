@@ -104,7 +104,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (tango-dark))))
+ '(custom-enabled-themes (quote (tango-dark)))
+ '(package-selected-packages
+   (quote
+    (ac-geiser slime undo-tree pretty-lambdada paredit multiple-cursors monokai-theme markdown-mode ido-vertical-mode geiser auto-complete))))
 
 (setq
  auto-save-default                        t ; nil to disable auto-save
@@ -112,7 +115,7 @@
  c-default-style                    "linux" ; Nice c indention.
  c-basic-offset                           4 ; Indentation
  js-indent-level                          2 ; js indentation
- default-directory                     "~/" ; Default home directory
+ default-directory                     "~/../../Documents/GitHub/UiB/" ; Default home directory
  inhibit-startup-message                  t ; Removes start-up screen
  initial-scratch-message                 "" ; Removes default scratch text
  ring-bell-function                 'ignore ; Stop annoying system ringing noice
@@ -349,3 +352,9 @@ located.")
 (global-set-key (kbd "C-c e")  'mc/edit-lines)
 (global-set-key (kbd "C-c a")  'mc/mark-all-like-this)
 (global-set-key (kbd "C-c n")  'mc/mark-next-like-this)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
