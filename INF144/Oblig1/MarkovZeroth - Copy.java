@@ -5,9 +5,12 @@ import java.util.Random;
 
 class MarkovZeroth {
 
-    public static HashMap<Character, Integer> mChain = new HashMap<Character, Integer>();
+    public static HashMap<String, Vector<String>> mChain = new HashMap<String, Vector<String>>();
     
     public static void main (String[] args) {
+        
+
+        words = readFile("Folktale.txt", words);
 
         char[] alphabet = new char[] {'a','b','c','d','e','f',
                                       'g','h','i','j','k','l',
@@ -16,15 +19,11 @@ class MarkovZeroth {
                                       'y','z','æ','ø','å',' '};
         char start = 'a';
 
-        for(int i = 0; i < alphabet.length; i++) {
-            mChain.put(alphabet[i], new Integer(0));
-        }
-
-        readFile("Folktale.txt");
         
-        for(int i = 0; i < alphabet.length; i++) {
-            System.out.println(alphabet[i] + ": " +  mChain.get(alphabet[i]));
-        }
+    }
+
+    public static void analyze(String text) {
+        
     }
 
     public static void readFile(String fileName) {
@@ -40,32 +39,26 @@ class MarkovZeroth {
 
             while((str = br.readLine()) != null) {
                 arr = str.split(" ");
-                int val = mChain.get(' ').intValue();
-                mChain.put(' ', new Integer(val + 1));
-                
                 for(int i = 0; i < arr.length; i++) {
-                    addChar(arr[i]);
+                    addWord(arr[i]);
                 }
                 arr = null;
             }
         }
         catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
+        return arrL;
     }
 
-    public static void addChar(String text) {
+    public static void  addWord(String text) {
         char[] letters = text.toCharArray();
 
-        for(int i = 0; i < letters.length; i++) {
-            
+        for(int i = 0; i < words.length; i++) {
+
             if(i == 0) {
-                mChain.put(letters[i], new Integer(1));
-            }
-            else {
-                
-                int value = mChain.get(letters[i]).intValue();
-                mChain.put(letters[i], new Integer(value + 1));
+                Vector<String> startWord = 
             }
         }
     }
