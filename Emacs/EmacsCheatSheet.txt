@@ -1,15 +1,16 @@
 C-g Quit
 C-x C-x Exit
 C-x C-f Open/"visit" a file
-C-x k kill the buffer representing a file... not deleting a file
+C-x k kill the buffer representing a file
 
 C-f move forward one character
-C-b move back
+C-b move back one character
 M-f move forward one word
 M-b move back one word
 
 C-d Delete a character
 M-d Delete a word
+C-S-backspace Delete whole line
 C-_ Undo
 
 C-p Previous line / up
@@ -23,10 +24,11 @@ C-v Page down
 M-v Page up
 C-l Center the screen
 
+C-x 1 Remove all windows
 C-x 2 Split top/bottom
-C-x o Other window
 C-x 3 Split left/right
-C-x 1 Remove all windows - simplify life
+C-x o Other window
+M-x <left><right>  Move between buffers
 
 Search
 C-s text <--- search

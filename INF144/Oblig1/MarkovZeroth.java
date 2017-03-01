@@ -14,29 +14,19 @@ class MarkovZeroth {
                                                 'y','z','æ','ø','å',' '};
 
     public static void main (String[] args) {
-
-
         char start = 'a';
 
         // fills the hashmap with all the values it should have to avoid
         // nullpointerexceptions (in theory)
         for(int i = 0; i < alphabet.length; i++) {
             mChain.put(alphabet[i], new Integer(0));
-
-            // debugging
-            //System.out.println("Put: " + alphabet[i] + " val: " + new Integer(0));
         }
 
         // initiates the analysis of the text
         readFile("Folktale.txt");
 
         // prints out the generated text
-        System.out.println(generateText(1000));
-
-        // prints out stats for each of the letters in the alphabet
-        for(int i = 0; i < alphabet.length; i++) {
-            System.out.println(alphabet[i] + ": " +  mChain.get(alphabet[i]));
-        }
+        System.out.println(generateText(100));
     }
 
     // readFile() analyses the given file, gives stats of each character
@@ -72,15 +62,6 @@ class MarkovZeroth {
     public static void addChar(String text) {
         char[] letters = text.toCharArray();
         int value = 0;
-
-        // debugging
-        /* System.out.println("Word: " + text);
-        for(char c : letters) {
-            System.out.print("Char: " + c + " ");
-        } 
-
-        System.out.println();
-        */
         
         for(int i = 0; i < letters.length; i++) {
             value = mChain.get(letters[i]).intValue();
@@ -89,13 +70,8 @@ class MarkovZeroth {
     }
 
     public static String generateText(int length) {
-
         int[] prob = new int[30];
         String out = "";
-
-        // Premature optimization is the root of all evil
-        // Can be more efficient by using StringBuilder.
-        // StringBuilder out = new StringBuilder();
 
         // Gathering the probabilities in one place for each char
         for(int i = 0; i < prob.length; i++) {
@@ -104,12 +80,6 @@ class MarkovZeroth {
             else
                 prob[i] = (prob[i-1] + mChain.get(alphabet[i]).intValue());
         }
-
-        /* Debugging
-        
-        for(int i = 0; i < prob.length; i++) {
-            System.out.println(alphabet[i] + ": " + prob[i]);
-        } */
 
         // Generating the output String
         for(int i = 0; i < length; i++) {
