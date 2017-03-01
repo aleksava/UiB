@@ -1,13 +1,11 @@
-import java.util.HashMap;
 import java.util.Random;
+import java.util.HashMap;
 
-// A bag to hold first approximation of a markov chain
-class MarkovBag {
-
-    private HashMap<String, Integer> map;
+// A bag to hold third approximation markov chain strings
+class MarkovBagCubed {
+    private HashMap<String, MarkovBagSquared> map;
     private Random rand = new Random();
-    private int prob = 0;
-    
+
     // char array of the alphabet for delivering the output character
     private static String[] alphabet = new String[] {"a","b","c","d","e","f",
                                                      "g","h","i","j","k","l",
@@ -15,65 +13,54 @@ class MarkovBag {
                                                      "s","t","u","v","w","x",
                                                      "y","z","æ","ø","å"," "};
 
-    // Constructor that fills HashMap with the allowed chars
-    // helping to avoid NullPointerException
-    public MarkovBag() {
-        this.map = new HashMap<String, Integer>();
-        
+    public MarkovBagCubed() {
+        this.map = new HashMap<String, MarkovBagSquared>();
         for(int i = 0; i < alphabet.length; i++) {
-            map.put(alphabet[i], new Integer(0));
+            map.put(alphabet[i], new MarkovBagSquared());
         }
     }
 
-    // Increments the occurences of a letter after the current
     public void add(String key) {
-        int val = this.map.get(key).intValue();
-        this.map.put(key, ++val);
+        MarkovBagSquared bag = map.get(key);
+        bag.add(key);
+        bag.incInt();
+        this.map.put(key, bag);
     }
 
-    // Fetches the number of times a letter has occurred
-    public int get(String key) {
-        return this.map.get(key).intValue();
+    public MarkovBagSquared get(String key) {
+        return this.map.get(key);
     }
 
-    // Fetches a random next letter based on probability
     public String getRandNext() {
         int[] stats = new int[30];
+        MarkovBag bag = null;
         int num = 0;
-
+        String out = "";
+        
         // Gathering stats to one array
         for(int i = 0; i < stats.length; i++) {
             if(i == 0) 
-                stats[i] = map.get(alphabet[i]).intValue();
+                stats[i] = map.get(alphabet[i]).getInt();
             else
-                stats[i] = (stats[i-1] + map.get(alphabet[i]).intValue());
+                stats[i] = (stats[i-1] + map.get(alphabet[i]).getInt());
         }
         
         num = rand.nextInt(stats[29] + 1);
 
-        // Finds the appropriate String in the alphabet array
+        // Finds the appropriate MarkovBag to search in
         for(int i = 0; i < stats.length; i++) {
             if(i == 0) {
                 if(num < stats[i]) {
-                    return alphabet[i];
+                    out = map.get(alphabet[i]).getRandNext();
                 }
             }
-            
             else {
                 if(num < stats[i] && num > stats[i-1]) {
-                    return alphabet[i];
+                    return map.get(alphabet[i]).getRandNext();
                 }
             }
         }
-        
-        return "";
-    }
-
-    public int getInt() {
-        return prob;
-    }
-
-    public void incInt() {
-        prob++;
+        System.out.println("OUT: " + out);
+        return out;
     }
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 class MarkovBagSquared {
     private HashMap<String, MarkovBag> map;
     private Random rand = new Random();
+    private int prob = 0;
     
     // char array of the alphabet for delivering the output character
     private static String[] alphabet = new String[] {"a","b","c","d","e","f",
@@ -41,6 +42,7 @@ class MarkovBagSquared {
         int[] stats = new int[30];
         MarkovBag bag = null;
         int num = 0;
+        String out = "";
 
         // Gathering stats to one array
         for(int i = 0; i < stats.length; i++) {
@@ -56,16 +58,28 @@ class MarkovBagSquared {
         for(int i = 0; i < stats.length; i++) {
             if(i == 0) {
                 if(num < stats[i]) {
-                    return map.get(alphabet[i]).getRandNext();
+                    out = alphabet[i];
+                    System.out.print("OUT1:" + out);
+                    out += map.get(alphabet[i]).getRandNext();
+                    System.out.print("OUT2:" + out);
                 }
             }
             else {
                 if(num < stats[i] && num > stats[i-1]) {
-                    return map.get(alphabet[i]).getRandNext();
+                    out = alphabet[i];
+                    out += map.get(alphabet[i]).getRandNext();
                 }
             }
         }
-        
-        return null;
+        System.out.println("OUT: " + out);
+        return out;
+    }
+
+    public int getInt() {
+        return prob;
+    }
+
+    public void incInt() {
+        prob++;
     }
 }

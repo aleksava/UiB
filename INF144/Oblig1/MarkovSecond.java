@@ -89,6 +89,6 @@ public class MarkovSecond {
 
         // Marking the end of the built String with a period
         out += ".";
-        System.out.println("The new random first order markov generated text: \n" + out);
+        System.out.println("The new random second order markov generated text: \n" + out);
     }
 }
