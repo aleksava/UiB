@@ -18,6 +18,7 @@ class MarkovOblig {
             e.printStackTrace();
         }
 
+        // Getting the start state from the user
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("The length of the state must match your approximation input. ");
@@ -39,10 +40,12 @@ class MarkovOblig {
         // The file defaults to a Norwegian fairytale
         model.loadData("Folktale.txt");
 
+        // Generates the randomly generated text from the MarkovModel
+        output = state;
         for(int i = 0; i < 100; i++) {
             nextLetter = model.getNextLetter(state);
             output += nextLetter;
-            state = state.substring(1, 3) + nextLetter;
+            state = state.substring(1, order) + nextLetter;
         }
 
         System.out.println("Here is the generated text: \n" + output);

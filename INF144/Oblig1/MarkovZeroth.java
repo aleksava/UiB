@@ -59,6 +59,7 @@ class MarkovZeroth {
         }
     }
 
+    // Increments the apprearanses of the characters from the file
     public static void addChar(String text) {
         char[] letters = text.toCharArray();
         int value = 0;
@@ -69,6 +70,8 @@ class MarkovZeroth {
         }
     }
 
+    // Generates random text based on number of appearances from the chars
+    // each character is independent from the previous
     public static String generateText(int length) {
         int[] prob = new int[30];
         String out = "";
