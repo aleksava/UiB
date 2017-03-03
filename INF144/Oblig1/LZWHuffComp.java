@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.File;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -9,60 +11,108 @@ class LZWHuffComp {
     private static final int set = 30; // 29 norwegian letters + <spacae>
     
     public static void main (String[] args) {
-        MarkovModel dictionary = new MarkovModel(3);
-        File file = new File("Folktale.txt");
+        int filesize = (int)(new File("Folktale.txt").length()/1024);
+        int compressedSize = 0;
         File compressed;
-        int filesize = (int)(file.length()/1024);
-        int compressedSize = 42;
-        dictionary.loadData("Folktale.txt");
         
 
         System.out.println("File size pre-compression: " + filesize + " kB");
 
-        compress("toobeornottobeeornot");
+        compress(readFile("Folktale.txt").toLowerCase());
 
-        compressed = new File("Output.txt");
+        compressed = new File("LZW.txt");
         compressedSize = (int)(compressed.length()/1024);
 
         System.out.println("File size post-compression: " + compressedSize + " kB");
+
+        decompress(compressed);
     }
 
     // Compresses files with norwegian text
     public static void compress(String input) {
-        HashMap<String, Integer> dictionary = buildBasicDictionary();
+        HashMap<String, Integer> dictionary = buildCompressionDictionary();
         ArrayList<Integer> compressed = new ArrayList<Integer>();
         int dictLength = 30;
         String a = "";
 
         // Build the compressed output, and continue on the dictionary
-        for(String s: input.split("")) {
-            String as = a + s;
-            if(dictionary.containsKey(as))
-                a = as;
+        for(char c: input.toCharArray()) {
+            String ac = a + c;
+            if(dictionary.containsKey(ac))
+                a = ac;
             else {
                 compressed.add(dictionary.get(a));
-                dictionary.put(as, dictLength++);
-                a = s;
+                dictionary.put(ac, dictLength++);
+                a = "" + c;
             }
         }
 
         if(!a.equals("")) {
             compressed.add(dictionary.get(a));
-        }
+        }     
 
-        writeFile(compressed); // Need to write huffman compression on top of this
-    }
+        writeFile(compressed, "LZW.txt"); // Need to write huffman compression on top of this
+        System.out.println("Compression rate with LZW: " + getCompressionRate());
 
-    // Expands file with norwegian text to original
-    public static void expand() {
-        HashMap<String, Integer> dictionary = buildBasicDictionary();
-        int dictLength = 30;
-
+        // Do Huffman compression here
         
     }
 
-    // Builds a basic 30 character long dictionary
-    public static HashMap<String, Integer>  buildBasicDictionary() {
+    // Expands file with norwegian text to original
+    public static void expand(ArrayList<Integer> compressed) {
+        // System.out.println("expand(ArrayList<Integer> comressed)");
+        HashMap<Integer, String> dictionary = buildExpansionDictionary();
+        StringBuilder sb = new StringBuilder();
+        int dictLength = 30;
+        String entry;
+
+        String w = "" + dictionary.get(compressed.remove(0));
+        sb.append(w);
+
+        for(int k: compressed) {
+            entry = "";
+            if(dictionary.containsKey(k))
+                entry = dictionary.get(k);
+            else if(k == dictLength)
+                entry = w + w.charAt(0);
+
+            sb.append(entry);
+
+            dictionary.put(dictLength++, w + entry.charAt(0));
+
+            w = entry;
+        }
+
+        // System.out.println(sb.toString());
+        writeFile(sb.toString(), "LZW_Expanded.txt");
+    }
+
+    public static void decompress(File file) {
+        //System.out.println("decompress(File file)");
+        ArrayList<Integer> compressed = new ArrayList<Integer>();
+        String line = null;
+        String[] arr;
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            line = br.readLine();
+
+            arr = line.split(" ");
+
+            for(String s: arr) {
+                compressed.add(Integer.parseInt(s));
+            }
+        }
+        catch(IOException | NumberFormatException e){
+            e.printStackTrace();
+        }
+
+        expand(compressed);
+    }
+    
+    // Builds a basic 30 character long dictionary for compression
+    public static HashMap<String, Integer>  buildCompressionDictionary() {
         HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
 
         for(int i = 97, j = 0; j < 26; i++, j++) {
@@ -77,11 +127,27 @@ class LZWHuffComp {
         return dictionary;
     }
 
-    // Writes input to file
-    public static void writeFile(ArrayList<Integer> list) {
+    // Builds a basic 30 character long dictionary for decompression
+    public static HashMap<Integer, String>  buildExpansionDictionary() {
+        HashMap<Integer, String> dictionary = new HashMap<Integer, String>();
 
+        for(int i = 97, j = 0; j < 26; i++, j++) {
+            dictionary.put(j, "" + (char)i);
+        }
+
+        dictionary.put(26, "æ");
+        dictionary.put(27, "ø");
+        dictionary.put(28, "å");
+        dictionary.put(29, " ");
+        
+        return dictionary;
+    }
+    
+    // Writes input to file
+    public static void writeFile(ArrayList<Integer> list, String filename) {
+        //System.out.println("writeFile(ArrayList<Integer>)");
         try {
-            PrintWriter writer = new PrintWriter("Output.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter(filename, "UTF-8");
 
             for(Integer i: list) {
                 writer.print((i + "") + " ");
@@ -93,9 +159,42 @@ class LZWHuffComp {
             e.printStackTrace();
         }
     }
+
+    public static void writeFile(String str, String filename) {
+        //System.out.println("writeFile(String str)");
+        try {
+            PrintWriter writer = new PrintWriter(filename, "UTF-8");
+
+            writer.println(str);
+
+            writer.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Reads text from a file to a String
+    public static String readFile(String path) {
+        StringBuilder sb = new StringBuilder();
+        String line;
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(path));
+            
+            while((line = br.readLine()) != null) {
+                sb.append(line.toLowerCase());
+            }
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+    }
     
-    // Returns the compression rate using the LZW compression (and Huffman compression on top)
-    public static int getCompressionRate() {
-        return 0;
+        // Returns the compression rate using the LZW compression (and Huffman compression on top)
+        public static int getCompressionRate() {
+            return 0;
     }
 }
