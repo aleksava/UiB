@@ -1,6 +1,3 @@
-import java.io.*;
-import java.util.*;
-
 abstract class HuffmanTree implements Comparable<HuffmanTree> {
     public final int frequency;
 
