@@ -63,9 +63,20 @@ class Huffman {
         StringBuilder sb = new StringBuilder();
         
         dfs(tree, new StringBuffer());
-        
-        for(String s : input.split("")) {
-            sb.append(codes.get(Integer.parseInt(s)));
+
+        try {
+            
+            for(char c : input.toCharArray()) {
+                if(c != ' ') {
+                    sb.append(codes.get(Character.getNumericValue(c)));
+                }
+                
+                else
+                    sb.append(codes.get(10));
+            }
+        }
+        catch(NumberFormatException e) {
+            e.printStackTrace();
         }
         
         return sb.toString();
@@ -77,6 +88,7 @@ class Huffman {
         if(tree instanceof HuffmanLeaf) {
             HuffmanLeaf leaf = (HuffmanLeaf) tree;
             codes.put(leaf.value, prefix.toString());
+            // System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
         }
         else if (tree instanceof HuffmanNode) {
             HuffmanNode node = (HuffmanNode)tree;
@@ -126,6 +138,38 @@ class Huffman {
         }
     }
 
+    public static void decode(String str) {
+        StringBuilder sb = new StringBuilder();
+        boolean found = false;
+        char[] arr = str.toCharArray();
+        StringBuilder prefix = new StringBuilder();
+        
+        for(int i = 0; i < arr.length; i ++ ){
+            prefix.append(arr[i]);
+            // System.out.println("Prefix: " + prefix.toString());
+            for(int j : codes.keySet()) {
+                // System.out.println(codes.get(j));
+                try {
+                    if(codes.get(j).equals(prefix.toString())) {
+                        if(j != 10)
+                            sb.append(j);
+                        else
+                            sb.append(" ");
+                        //System.out.println("Found one!");
+                        prefix = new StringBuilder();
+                        //System.out.println("Prefix reset!");
+                    }
+                }
+                catch(NullPointerException e) {
+                    // let it run
+                }
+            }
+        }
+
+        System.out.println("Writing decoded file...");
+        writeFile(sb.toString(), "unhuffed.txt");
+    }
+    
     public static void main (String[] args) {
         String test = readFile("LZW.txt");
 
@@ -143,12 +187,17 @@ class Huffman {
         
         // print out results
 
-        String output = writeCode(tree, );
+        System.out.println("Encoding...");
+        String output = writeCode(tree, test);
 
+        System.out.println("Writing file...");
         writeFile(output, "Huffed.txt");
+
+        System.out.println("Decoding...");
+        decode(output);
         
         for(Integer i: codes.keySet()) {
-            System.out.println(i + ": " + codes.get(i));
+            System.out.println(i + "\t" + codes.get(i));
         }
     }
 }

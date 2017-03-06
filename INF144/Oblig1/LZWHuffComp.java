@@ -1,10 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.io.PrintWriter;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
 
 class LZWHuffComp {
 
@@ -55,6 +50,9 @@ class LZWHuffComp {
         System.out.println("Compression rate with LZW: " + getCompressionRate());
 
         // Do Huffman compression here
+
+        buildTree();
+        writeHuff();
         
     }
 
