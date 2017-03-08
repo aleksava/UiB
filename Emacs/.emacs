@@ -191,7 +191,9 @@ located.")
 ;; non-word character will cause an expansion.
 (defun java-shortcuts ()
   (define-abbrev-table 'java-mode-abbrev-table
-    '(("psvm" "public static void main (String[] args) {}" nil 0)
+    '(("psvm" "public static void main (String[] args) {
+    
+}" nil 0)
       ("sopl" "System.out.println()" nil 0)
       ("classHund"
        "class Hund {
@@ -250,6 +252,33 @@ located.")
     public String toString() {
         return \"Student med navn \" + navn;
     }
+}" nil 0)
+      ("classTest"
+       "import java.io.*;
+import java.util.*;
+
+class Test {
+    public static void main (String[] args) {
+        
+    }
+
+    public static String readFile(String path) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(path));
+            while((String line = br.readLine()) != null) 
+                sb.append(line.toLowerCase());
+        } catch(IOException e) { e.printStackTrace(); }
+        return sb.toString();
+    }
+
+    public static void writeFile(String str, String filename) {
+        try {
+            PrintWriter writer = new PrintWriter(filename, \"UTF-8\");
+            writer.println(str);
+            writer.close();
+        } catch(IOException e) { e.printStackTrace(); }
+    }
 }" nil 0))))
 
 (defun general-shortcuts ()
@@ -272,6 +301,58 @@ located.")
   "Switch to the previous window"
   (interactive)
   (select-window (previous-window)))
+
+
+;; Move line up or down using Alt-<up><down>
+(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (setq col (current-column))
+  (beginning-of-line) (setq start (point))
+  (end-of-line) (forward-char) (setq end (point))
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (insert line-text)
+    ;; restore point to original column in moved line
+    (forward-line -1)
+    (forward-char col)))
+
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+(global-set-key (kbd "M-<up>") 'move-line-up)
+(global-set-key (kbd "M-<down>") 'move-line-down)(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (setq col (current-column))
+  (beginning-of-line) (setq start (point))
+  (end-of-line) (forward-char) (setq end (point))
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (insert line-text)
+    ;; restore point to original column in moved line
+    (forward-line -1)
+    (forward-char col)))
+
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+(global-set-key (kbd "M-<up>") 'move-line-up)
+(global-set-key (kbd "M-<down>") 'move-line-down)
 
 
 ;; To tidy up a buffer we define this function borrowed from simenheg
