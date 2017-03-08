@@ -1,3 +1,6 @@
+import java.util.*;
+import java.io.*;
+
 abstract class HuffmanTree implements Comparable<HuffmanTree> {
     public final int frequency;
 
@@ -37,13 +40,15 @@ class Huffman {
     public static HuffmanTree buildTree(int[] freqs) {
         PriorityQueue<HuffmanTree> trees = new PriorityQueue<HuffmanTree>();
 
+        // Filling the PriorityQueue with leaves
         for(int i = 0; i < freqs.length; i++) {
             trees.offer(new HuffmanLeaf(freqs[i], i));
         }
 
-        // VELDIG SKEPTISK TIL DETTE...................................................
         assert trees.size() > 0;
 
+        // Gets and removes the two heads of the queue and gathers them to one
+        // Node, as long as there is more than 1 element in the queue
         while(trees.size() > 1) {
             HuffmanTree a = trees.poll();
             HuffmanTree b = trees.poll();
@@ -51,18 +56,18 @@ class Huffman {
             trees.offer(new HuffmanNode(a, b));
         }
 
+        // Sends of the final node as the root of a tree
         return trees.poll();
     }
 
 
-
+    // Generates the binary Huffman code for a 
     public static String writeCode(HuffmanTree tree, String input) {
         StringBuilder sb = new StringBuilder();
         
-        dfs(tree, new StringBuffer());
+        gatherCodes(tree, new StringBuffer());
 
         try {
-            
             for(char c : input.toCharArray()) {
                 if(c != ' ') {
                     sb.append(codes.get(Character.getNumericValue(c)));
@@ -79,25 +84,28 @@ class Huffman {
         return sb.toString();
     }
 
-    public static void dfs(HuffmanTree tree, StringBuffer prefix) {
+
+    // Gathers the codes for each character by moving through the entire tree
+    public static void gatherCodes(HuffmanTree tree, StringBuffer prefix) {
         assert tree != null;
-        
+
+        // Checks if at a Leaf or a Node, and either moves on building the prefix
+        // or puts the codes with the value in a HashMap for simplicity
         if(tree instanceof HuffmanLeaf) {
             HuffmanLeaf leaf = (HuffmanLeaf) tree;
             codes.put(leaf.value, prefix.toString());
-            // System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
         }
-        else if (tree instanceof HuffmanNode) {
+        else if(tree instanceof HuffmanNode) {
             HuffmanNode node = (HuffmanNode)tree;
             
-            // traverse left
+            // Traverse left in the tree
             prefix.append('0');
-            dfs(node.left, prefix);
+            gatherCodes(node.left, prefix);
             prefix.deleteCharAt(prefix.length()-1);
             
-            // traverse right
+            // Traverse right in the tree
             prefix.append('1');
-            dfs(node.right, prefix);
+            gatherCodes(node.right, prefix);
             prefix.deleteCharAt(prefix.length()-1);
         }
     }
@@ -121,8 +129,12 @@ class Huffman {
         
         return sb.toString();
     }
+    
 
+    // Writes a given String to a new file. 
     public static void writeFile(String str, String filename) {
+        System.out.println("The length of " + filename + " is: " + str.length());
+
         try {
             PrintWriter writer = new PrintWriter(filename, "UTF-8");
 
@@ -135,26 +147,23 @@ class Huffman {
         }
     }
 
+    
+    // Decodes a String from Huffman binary to LZW dictionary indexes
     public static void decode(String str) {
         StringBuilder sb = new StringBuilder();
-        boolean found = false;
         char[] arr = str.toCharArray();
         StringBuilder prefix = new StringBuilder();
         
         for(int i = 0; i < arr.length; i ++ ){
             prefix.append(arr[i]);
-            // System.out.println("Prefix: " + prefix.toString());
             for(int j : codes.keySet()) {
-                // System.out.println(codes.get(j));
                 try {
                     if(codes.get(j).equals(prefix.toString())) {
-                        if(j != 10)
+                        if(j != 10) 
                             sb.append(j);
-                        else
+                        else 
                             sb.append(" ");
-                        //System.out.println("Found one!");
                         prefix = new StringBuilder();
-                        //System.out.println("Prefix reset!");
                     }
                 }
                 catch(NullPointerException e) {
@@ -163,8 +172,7 @@ class Huffman {
             }
         }
 
-        System.out.println("Writing decoded file...");
-        writeFile(sb.toString(), "unhuffed.txt");
+        writeFile(sb.toString(), "lzw.huff");
     }
     
     public static void main (String[] args) {
@@ -188,7 +196,7 @@ class Huffman {
         String output = writeCode(tree, test);
 
         System.out.println("Writing file...");
-        writeFile(output, "Huffed.txt");
+        writeFile(output, "code.huff");
 
         System.out.println("Decoding...");
         decode(output);
