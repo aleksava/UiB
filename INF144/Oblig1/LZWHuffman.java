@@ -8,26 +8,37 @@ class LZWHuffman {
     private static Huffman huff = new Huffman();
     
     public static void main (String[] args) {
-        int filesize = (int)(new File("Folktale.txt").length()/1024);
-        int compressedSize = 0;
         File compressed;
+        MarkovOblig model = new MarkovOblig();
+        ArrayList<Double> rate = new ArrayList<Double>();
+        double average = 0.0;
 
-        //System.out.println("File size pre-compression: " + filesize + " kB");
+        // Generates 100 new texts that are compressed, and the compression
+        // rate is measured. To remove Huffman compression, out needs to be
+        // multiplied by 3 to get bit requirement. Also, output.length() as the
+        // return value for compress() must be changed to sb.toString().length()
+        for(int i = 0; i < 100; i++) {
+            int out = compress(model.getOutput(3, "ask", 8000).toLowerCase());
+            rate.add((double)(8000*4)/(out));
+        }
 
-        compress(readFile("Folktale.txt").toLowerCase());
+        // Finds average compression rate
+        for(int i = 0; i < rate.size(); i++){
+            average += rate.get(i);
+        }
+        average = average/100;
 
-        
- 
+        System.out.print("The average compression rate with huffman, is: ");
+        System.out.printf("%.4f\n", average);
+
+        // Decomressing the last file
         compressed = new File("coded.lzw");
-        compressedSize = (int)(compressed.length()/1024);
-
-        //System.out.println("File size post-compression: " + compressedSize + " kB");
-
         decompress(compressed);
-    }
+        
+    } // End of main
 
     // Compresses files with norwegian text
-    public static void compress(String input) {
+    public static int compress(String input) {
         HashMap<String, Integer> dictionary = buildCompressionDictionary();
         ArrayList<Integer> compressed = new ArrayList<Integer>();
         int dictLength = 30;
@@ -49,6 +60,7 @@ class LZWHuffman {
             compressed.add(dictionary.get(a));
         }     
 
+        // Creating the output string to be further compressed
         StringBuilder sb = new StringBuilder();
         String space = "";
         for(int i : compressed) {
@@ -58,9 +70,8 @@ class LZWHuffman {
         }
         
         writeFile(sb.toString(), "coded.lzw"); // Need to write huffman compression on top of this
-        System.out.println("Compression rate with LZW: " + getCompressionRate());
 
-        // Do Huffman compression here
+        // Huffman compression on the newly written file is done here
         String lzw = readFile("coded.lzw");
 
         int[] charFreqs = new int[11];
@@ -78,9 +89,12 @@ class LZWHuffman {
         
         String output = huff.writeCode(tree, lzw);
 
-        huff.writeFile(output, "code.huff");
+        writeFile(output, "code.huff");
+
+        return output.length();
     }
 
+    
     // Expands file with norwegian text to original
     public static void expand(ArrayList<Integer> compressed) {
         HashMap<Integer, String> dictionary = buildExpansionDictionary();
@@ -99,15 +113,16 @@ class LZWHuffman {
                 entry = w + w.charAt(0);
 
             sb.append(entry);
-
             dictionary.put(dictLength++, w + entry.charAt(0));
-
             w = entry;
         }
 
+        // Writes the decompressed file as "Output.txt"
         writeFile(sb.toString(), "Output.txt");
     }
 
+    
+    // Reads file, builds an ArrayList to use in the expand() method
     public static void decompress(File file) {
 
         // Converting from binary huffman, to lzw library readable
@@ -122,9 +137,7 @@ class LZWHuffman {
         
         try {
             BufferedReader br = new BufferedReader(new FileReader("lzw.huff"));
-
             line = br.readLine();
-
             arr = line.split(" ");
 
             for(String s: arr) {
@@ -137,6 +150,7 @@ class LZWHuffman {
 
         expand(compressed);
     }
+
     
     // Builds a basic 30 character long dictionary for compression
     public static HashMap<String, Integer>  buildCompressionDictionary() {
@@ -154,7 +168,9 @@ class LZWHuffman {
         return dictionary;
     }
 
+    
     // Builds a basic 30 character long dictionary for decompression
+    // Duplicate method because keys and values had to be switched
     public static HashMap<Integer, String>  buildExpansionDictionary() {
         HashMap<Integer, String> dictionary = new HashMap<Integer, String>();
 
@@ -162,6 +178,7 @@ class LZWHuffman {
             dictionary.put(j, "" + (char)i);
         }
 
+        // Putting in special characters
         dictionary.put(26, "æ");
         dictionary.put(27, "ø");
         dictionary.put(28, "å");
@@ -170,16 +187,12 @@ class LZWHuffman {
         return dictionary;
     }
 
+    
     // writes to a file from a single string
-    public static void writeFile(String str, String filename) {
-
-        System.out.println("The length of " + filename + " is: " + str.length());
-        
+    public static void writeFile(String str, String filename) {        
         try {
             PrintWriter writer = new PrintWriter(filename, "UTF-8");
-
             writer.println(str);
-
             writer.close();
         }
         catch(IOException e) {
@@ -187,6 +200,7 @@ class LZWHuffman {
         }
     }
 
+    
     // Reads text from a file to a String
     public static String readFile(String path) {
         StringBuilder sb = new StringBuilder();
@@ -204,10 +218,5 @@ class LZWHuffman {
         }
 
         return sb.toString();
-    }
-    
-        // Returns the compression rate using the LZW compression (and Huffman compression on top)
-        public static int getCompressionRate() {
-            return 0;
     }
 }

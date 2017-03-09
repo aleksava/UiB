@@ -133,7 +133,7 @@ class Huffman {
 
     // Writes a given String to a new file. 
     public static void writeFile(String str, String filename) {
-        System.out.println("The length of " + filename + " is: " + str.length());
+        //System.out.println("The length of " + filename + " is: " + str.length());
 
         try {
             PrintWriter writer = new PrintWriter(filename, "UTF-8");
