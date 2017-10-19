@@ -4,20 +4,10 @@ import java.util.Collections;
 
 class Gadget { // Dododododo Inspector Gadget
     public static void main (String[] args) {
-        print(countsFromArray(cooldownSamples(27, 10), 5));
-        String[][] arr = {{"1", "2"}, {"3", "4"}};
-        printArray2d(arr);
-
-
-        double[] array = {2.0088799960771184, 2.121420889236832, 1.9396865921089017,
-                          2.4044747294759574, 2.2430778650951178, 2.083040119880876,
-                          2.0595035785038114, 2.1782979876210806, 1.8812817807415378,
-                          2.232108837421659};
-        
-        double[] counts = countsFromArray(array, 10);
+        double[] array = cooldownSamples(27, 100000);
+        double[] counts = countsFromArray(array, 20);
         String[][] array2d = array2dFromCounts(counts);
-        
-        printArray2d(array2d);
+        printReport(array2d, minFromArray(array), maxFromArray(array));
     }
 
     public static void print(double[] array) {
@@ -79,12 +69,10 @@ class Gadget { // Dododododo Inspector Gadget
         double min = minFromArray(array);
         double rangeSize = (max-min)/(numRanges - 1);
 
-        for(int i = 0; i < array.length; i++) {
-
-            // THIS IS WRONG, FIX THIS
-            if(rangeSize * i >= (array[i]-min) && (array[i]-min) < rangeSize * (i+1)) {
-                // counts[rangeSize*i] ++; need to control incrementations                
-            }
+        for(double value : array) {
+            for(int i = (int) ((value - min) / rangeSize); i < array.length; i++)
+                if((rangeSize * i <= (value - min)) && (value - min) < rangeSize * (i + 1))
+                    counts[i]++;
         }
 
         return counts;
@@ -105,11 +93,8 @@ class Gadget { // Dododododo Inspector Gadget
         double max = maxFromArray(counts);
 
         for(int i = 0; i < counts.length; i++) {
-            for(int j = 0; j < counts.length; j++) {
-
-                // k = counts[i]
-                // THIS IS WRONG, FIX THIS
-                if(j < (counts[i] * PRINT_WIDTH / max)) {
+            for(int j = 0; j < PRINT_WIDTH; j++) {
+                if(j < counts[i] * PRINT_WIDTH / max) {
                     arr2d[i][j] = "#";
                 } else {
                     arr2d[i][j] = " ";
@@ -118,5 +103,17 @@ class Gadget { // Dododododo Inspector Gadget
         }
         
         return arr2d;
+    }
+
+    public static void printReport(String[][] array2d, double arrayMin,
+                                   double arrayMax) {
+        double step = (arrayMax - arrayMin) / (array2d.length - 1);
+        System.out.println("Time since death probablility distribution");
+        System.out.printf("Each line corresponds to %.2f hours.\n", step);
+        System.out.println("-------------------------------------------------");
+        System.out.printf("%.2f hours\n\n\n", arrayMin);
+        printArray2d(array2d);
+        System.out.printf("\n\n%.2f hours\n", arrayMax);
+        System.out.println("-------------------------------------------------");
     }
 }
