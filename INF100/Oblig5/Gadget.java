@@ -6,7 +6,7 @@ class Gadget { // Dododododo Inspector Gadget
     public static void main (String[] args) {
         print(countsFromArray(cooldownSamples(27, 10), 5));
         String[][] arr = {{"1", "2"}, {"3", "4"}};
-        printArray2D(arr);
+        printArray2d(arr);
 
 
         double[] array = {2.0088799960771184, 2.121420889236832, 1.9396865921089017,
@@ -80,6 +80,8 @@ class Gadget { // Dododododo Inspector Gadget
         double rangeSize = (max-min)/(numRanges - 1);
 
         for(int i = 0; i < array.length; i++) {
+
+            // THIS IS WRONG, FIX THIS
             if(rangeSize * i >= (array[i]-min) && (array[i]-min) < rangeSize * (i+1)) {
                 // counts[rangeSize*i] ++; need to control incrementations                
             }
@@ -88,7 +90,7 @@ class Gadget { // Dododododo Inspector Gadget
         return counts;
     }
 
-    public static void printArray2D(String[][] arr2D2) { // beep boop
+    public static void printArray2d(String[][] arr2D2) { // beep boop
         for(int i = 0; i < arr2D2.length; i++) {
             for(int j = 0; j < arr2D2[i].length; j++) {
                 System.out.print(arr2D2[i][j]);
@@ -97,13 +99,22 @@ class Gadget { // Dododododo Inspector Gadget
         }
     }
 
-    public static String[][] array2DFromCounts(double[] counts) {
+    public static String[][] array2dFromCounts(double[] counts) {
         final int PRINT_WIDTH = 50;
         String[][] arr2d = new String[counts.length][PRINT_WIDTH];
+        double max = maxFromArray(counts);
 
         for(int i = 0; i < counts.length; i++) {
-            if(counts[i] == k)
-                arr2d[]
+            for(int j = 0; j < counts.length; j++) {
+
+                // k = counts[i]
+                // THIS IS WRONG, FIX THIS
+                if(j < (counts[i] * PRINT_WIDTH / max)) {
+                    arr2d[i][j] = "#";
+                } else {
+                    arr2d[i][j] = " ";
+                }
+            }
         }
         
         return arr2d;
