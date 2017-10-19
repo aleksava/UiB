@@ -9,12 +9,6 @@ class Gadget { // Dododododo Inspector Gadget
         String[][] array2d = array2dFromCounts(counts);
         printReport(array2d, minFromArray(array), maxFromArray(array));
     }
-
-    public static void print(double[] array) {
-        for(int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
-    }
     
     public static double cooldown(double temperature) {
         Random random = new Random();
@@ -31,6 +25,8 @@ class Gadget { // Dododododo Inspector Gadget
         return cooldownTime;
     }
 
+    // Creates and returns an array that contains the results from
+    // cooldown() with a specific temperature
     public static double[] cooldownSamples(int temperature, int numSamples) {
         double[] arr = new double[numSamples];
         
@@ -41,6 +37,7 @@ class Gadget { // Dododododo Inspector Gadget
         return arr;
     }
 
+    // Finds the minimum value in an array
     public static double minFromArray(double[] array) {
         double min = array[0];
         
@@ -52,6 +49,7 @@ class Gadget { // Dododododo Inspector Gadget
         return min;
     }
 
+    // Finds the maximum value in an array
     public static double maxFromArray(double[] array) {
         double max = array[0];
         
@@ -63,6 +61,8 @@ class Gadget { // Dododododo Inspector Gadget
         return max;
     }
 
+    // Splits the range of values in an array into equally sized ranges
+    // and counts the number of samples that fall within each range
     public static double[] countsFromArray(double[] array, int numRanges) {
         double[] counts = new double[numRanges];
         double max = maxFromArray(array);
@@ -70,14 +70,17 @@ class Gadget { // Dododododo Inspector Gadget
         double rangeSize = (max-min)/(numRanges - 1);
 
         for(double value : array) {
-            for(int i = (int) ((value - min) / rangeSize); i < array.length; i++)
-                if((rangeSize * i <= (value - min)) && (value - min) < rangeSize * (i + 1))
+            for(int i = (int) ((value - min)/rangeSize); i < array.length; i++)
+                if((rangeSize * i <= (value - min)) &&    // current value larger than min
+                   (value - min) < rangeSize * (i + 1)) { // current value less than max 
                     counts[i]++;
+                }
         }
 
         return counts;
     }
 
+    // Prints each element of the given 2d array
     public static void printArray2d(String[][] arr2D2) { // beep boop
         for(int i = 0; i < arr2D2.length; i++) {
             for(int j = 0; j < arr2D2[i].length; j++) {
@@ -87,11 +90,15 @@ class Gadget { // Dododododo Inspector Gadget
         }
     }
 
+    // Converts the array from countsFromArray() into a 2d array
+    // that is printable
     public static String[][] array2dFromCounts(double[] counts) {
         final int PRINT_WIDTH = 50;
         String[][] arr2d = new String[counts.length][PRINT_WIDTH];
         double max = maxFromArray(counts);
 
+        // Iterates over the 2D-array and inserts "#" for each sample
+        // that is within the current range. " " is used as filler
         for(int i = 0; i < counts.length; i++) {
             for(int j = 0; j < PRINT_WIDTH; j++) {
                 if(j < counts[i] * PRINT_WIDTH / max) {
@@ -105,6 +112,7 @@ class Gadget { // Dododododo Inspector Gadget
         return arr2d;
     }
 
+    // Creates a report given the rest of the program, prints to terminal
     public static void printReport(String[][] array2d, double arrayMin,
                                    double arrayMax) {
         double step = (arrayMax - arrayMin) / (array2d.length - 1);
