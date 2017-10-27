@@ -11,21 +11,12 @@ class Grading {
         ArrayList<String> students = getNames("students.csv");
         ArrayList<String> graders = getNames("graders.csv");
         ArrayList<String> assigned = assignGraders(students, graders);
-        
-        // print(students);
-        // print(graders);
-        // print(assigned);
 
         writeFile(assigned, "AssignedGraders.txt");
+        
+    } // end of main()
 
-    }
-
-    public static void print(ArrayList<String> arr) {
-        for(int i = 0; i < arr.size(); i++) {
-            System.out.println(arr.get(i));
-        }
-    } // end of print()
-
+    // Method that returns name from a file in an ArrayList<String>
     public static ArrayList<String> getNames(String filename) {
         ArrayList<String> arrL = new ArrayList<String>();
         String temp = "";
@@ -37,12 +28,12 @@ class Grading {
                 arrL.add(temp);
             }
             
-        } catch(FileNotFoundException e) {
+        } catch(FileNotFoundException e) { // Exception if file doesn't exist
             System.out.println("Cannot find the file: '" + filename +
                                "'. Please try again");
             e.printStackTrace();
             
-        } catch(IOException ex) {
+        } catch(IOException ex) { // General exception to catch BR exceptions
             System.out.println("Something went wrong reading the file");
             ex.printStackTrace();
         }
@@ -51,7 +42,8 @@ class Grading {
         
     } // end of getNames()
 
-    
+    // Method assigns an equal number of students to each grader (+/- 1),
+    // also notifies how many students has been assigned to each grader
     public static ArrayList<String> assignGraders(ArrayList<String> students,
                                                   ArrayList<String> graders) {
         ArrayList<String> assigned = new ArrayList<String>();
@@ -65,7 +57,7 @@ class Grading {
             studPerGrader ++;
 
             if(studPerGrader >= numStudents/numGraders) {
-                System.out.println("Assigned " + studPerGrader + " students to " +
+                System.out.println("Assigned " + studPerGrader+" students to " +
                                    graders.get(currGrader));
                 currGrader++;
                 numStudents = numStudents - studPerGrader;
@@ -78,17 +70,19 @@ class Grading {
         
     } // end of assignGraders()
 
+    // Method that writes the pair of students and graders to file
     public static void writeFile(ArrayList<String> assignment, String filename){
-
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+            BufferedWriter writer =new BufferedWriter(new FileWriter(filename));
             for(int i = 0; i < assignment.size(); i++) {
+                
+                // Need '/n' to generate list, instead of bulk
                 writer.write(assignment.get(i) + "\n");
             }
             writer.close();
-        } catch(FileNotFoundException ex) {
+        } catch(FileNotFoundException ex) { // Exception if construction fails
             ex.printStackTrace();
-        } catch(IOException e) {
+        } catch(IOException e) { // Exception if BW fails
             e.printStackTrace();
         }
         
