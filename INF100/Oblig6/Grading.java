@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -9,17 +11,20 @@ class Grading {
         ArrayList<String> students = getNames("students.csv");
         ArrayList<String> graders = getNames("graders.csv");
         ArrayList<String> assigned = assignGraders(students, graders);
-                
+        
         // print(students);
         // print(graders);
-        //print(assigned);
+        // print(assigned);
+
+        writeFile(assigned, "AssignedGraders.txt");
+
     }
 
     public static void print(ArrayList<String> arr) {
         for(int i = 0; i < arr.size(); i++) {
             System.out.println(arr.get(i));
         }
-    }
+    } // end of print()
 
     public static ArrayList<String> getNames(String filename) {
         ArrayList<String> arrL = new ArrayList<String>();
@@ -43,37 +48,50 @@ class Grading {
         }
 
         return arrL;
-    }
+        
+    } // end of getNames()
 
+    
     public static ArrayList<String> assignGraders(ArrayList<String> students,
                                                   ArrayList<String> graders) {
         ArrayList<String> assigned = new ArrayList<String>();
-        int[] assignments = new int[graders.size()];
-        String temp = "";
-        int grader = 0;
-        int num = 0;
+        int numStudents = students.size();
+        int numGraders = graders.size();
+        int currGrader = 0;
+        int studPerGrader = 0;
 
         for(int i = 0; i < students.size(); i++) {
-            assigned.add(students.get(i) + ", " + graders.get(num));
-            assignments[num++] ++;
+            assigned.add(students.get(i) + ", " + graders.get(currGrader));
+            studPerGrader ++;
 
-            if(num == graders.size())
-                num = 0;
-
-            /*
-            if(num % (students.size()/graders.size()) == 0) {
-                System.out.println("Assigned " + num + " students to " +
-                                   graders.get(grader));
-                grader++;
-                num = 0;
-            } */
-        }
-
-        for(int j = 0; j < assignments.length; j++) {
-            System.out.println("Assigned " + assignments[j] + " students to " +
-                               graders.get(j));
+            if(studPerGrader >= numStudents/numGraders) {
+                System.out.println("Assigned " + studPerGrader + " students to " +
+                                   graders.get(currGrader));
+                currGrader++;
+                numStudents = numStudents - studPerGrader;
+                numGraders = numGraders - 1;
+                studPerGrader = 0;
+            }
         }
 
         return assigned;
-    }
-}
+        
+    } // end of assignGraders()
+
+    public static void writeFile(ArrayList<String> assignment, String filename){
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+            for(int i = 0; i < assignment.size(); i++) {
+                writer.write(assignment.get(i) + "\n");
+            }
+            writer.close();
+        } catch(FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+    } // end of writeFile()
+    
+} // end of class Grading
