@@ -13,6 +13,29 @@ class Address {
         country = c;
     }
 
+    public Address() {
+        // empty
+    }
+
+    public void addStreet(String s){
+        street = s;
+    }
+
+    public void addStreetNum(int sn){
+        streetNumber = sn;
+    }
+
+    public void addPostCode(int pc){
+        postalCode = pc;
+    }
+
+    public void addTown(String t){
+        town = t;
+    }
+    public void addCountry(String c){
+        country = c;
+    }
+    
     @Override
     public String toString() {
         return (street + " " + streetNumber + "\n"
