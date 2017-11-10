@@ -11,6 +11,7 @@ class Parcel {
         barcode = UUID.randomUUID();
     }
 
+    @Override
     public String toString() {
         return ("Barcode: " + barcode + "\n" +
                 "Sender: " + sender + "\n" +

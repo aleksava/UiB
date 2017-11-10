@@ -13,6 +13,8 @@ class Address {
         country = c;
     }
 
+    // Empty constructor and method for each variable to simplfy
+    // creation of addresses
     public Address() {
         // empty
     }

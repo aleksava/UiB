@@ -1,18 +1,3 @@
-
-/*
-
-
-NOTE:
-FIX LIST:
-Fix input with name and address, need firstname lastname "Aleksander Våge" "Vestre Torggaten"
-Fix printing and prompting of filling address
-     Follow guideline of menu
-More information to user, that things executed properly
-Formatting of file, '^M' ?? And nextline between items
-
-
-*/
-
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -37,30 +22,36 @@ class Postal {
                 // register parcel
                 Parcel parcel = registerParcel();
                 registeredParcels.add(parcel);
+                
             } else if (command.equals("p")) {
                 // print registered parcels to display 
                 parcelsToTerminal(registeredParcels);
+                
             } else if (command.equals("w")) {
                 // write registered parcels to file
-                System.out.printf("Input a filename: "
-                                  + "%n> ");
-
+                System.out.print("\nInput a filename: \n>");
                 String filename = sc.next();
-                
                 parcelsToFile(registeredParcels, filename);
+                
             } else if (command.equals("c")) {
                 // clear registered parcels
-                System.out.println("Are you sure you want to delete all " +
+                System.out.println("\nAre you sure you want to delete all " +
                                    registeredParcels.size() + " parcel(s)?");
+                System.out.print("[Yes/No] \n>");
                 String s = sc.next();
+                
                 if(s.equalsIgnoreCase("y") || s.equalsIgnoreCase("yes")) {
                     registeredParcels.clear();
-                    System.out.println("The parcel(s) have been cleared.");
-                } else 
-                    System.out.println("The parcel(s) were NOT cleared.");
+                    System.out.println("The parcel(s) have been cleared.\n");
+                } else {
+                    System.out.println("The parcel(s) were NOT cleared.\n");
+                }
+                
             } else if (command.equals("q")) {
+                // exiting loop and program
                 System.out.println("[Quitting]");
                 done = true;
+                
             } else {
                 System.out.println("[Unknown command]");
             }
@@ -68,9 +59,9 @@ class Postal {
         
     } // end of main
 
-    // parsel has two persons, sender and recipient
-    // person has String name and Address address
-    // address has String street, int streetnumber, int postalcode, string town, string country
+    
+    // Method for registering parcels, initiates registration for
+    // both sender and recipient using registerPerson()
     public static Parcel registerParcel() {
         Parcel parcel = null;
         Address sendAdd = new Address();
@@ -78,102 +69,102 @@ class Postal {
 
         Scanner sc = new Scanner(System.in);
         
-        System.out.print("Please input the name of the sender: ");
-        String senderName = sc.next();
+        System.out.println("\nPlease register the sender");
+        Person sender = registerPerson();
 
-        System.out.println("Please fill in the information of the sender");
-        fillAddress(sendAdd);
+        System.out.println("\nPlease register the recipient: ");
+        Person recipient = registerPerson();
 
-        System.out.print("Please input the name of the recipient: ");
-        String reciName = sc.next();
+        System.out.println("\n[Parcel registered]\n");
         
-        System.out.println("Please fill in the information of the recipient");
-        fillAddress(reciAdd);
-
-        parcel = new Parcel(new Person(senderName, sendAdd), new Person(reciName, reciAdd));
-
-        return parcel;
+        return new Parcel(sender, recipient);
         
-    }
+    } // end of method
 
+    
+    // Method for printing all parcels to terminal
     public static void parcelsToTerminal(ArrayList<Parcel> arrL) {
+        System.out.println();
+        
         for(int i = 0; i < arrL.size(); i ++) {
-            System.out.println(arrL.get(i));
+            System.out.println(arrL.get(i) + "\n");
         }
-    }
+    } // end of method
 
+    
+    // Method for writing all parcels to file, given filename
     public static void parcelsToFile(ArrayList<Parcel> arrL, String filename) {
         PrintWriter writer = null;
 
         try {
-            writer = new PrintWriter(filename, "UTF-8");
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        for(int i = 0; i < arrL.size(); i++) {
-            try {
+            writer = new PrintWriter(filename);
+            
+            for(int i = 0; i < arrL.size(); i++) {
                 writer.println(arrL.get(i) + "\n");
-            } catch(NullPointerException e) {
-                e.printStackTrace();
             }
-        }
 
-        writer.close();
+            writer.close();
+        
+        } catch(IOException e) {
+            System.out.println("Something went wrong when writing the file.\n");
+            e.printStackTrace();
+        } // end of try-catch
+        
+        System.out.println("The file " + filename + " was created.\n");
+    } // end of method
 
-        System.out.println("The file " + filename + " was created.");
-    }
+    
+    // Method for registering each person, applies to both sender
+    // and to recipient. Asks for details of name, and address
+    public static Person registerPerson() {
+        Address address = new Address();
+        
+        System.out.print("Enter name: \n>");
+        String name = inputString();
+        
+        System.out.print("Enter street name: \n>");
+        address.addStreet(inputString());
 
-    public static Address fillAddress(Address add) {
-        boolean condition = true;
+        System.out.print("Enter street number: (Numbers only) \n>");
+        address.addStreetNum(inputInt());
+
+        System.out.print("Enter postal code: (Numbers only) \n>");
+        address.addPostCode(inputInt());
+
+        System.out.print("Enter town: \n>");
+        address.addTown(inputString());
+
+        System.out.print("Enter country: \n>");
+        address.addCountry(inputString());
+
+        return new Person(name, address);
+    } // end of method
+
+    
+    // Simplifying input of strings in registerPerson
+    public static String inputString() {
         Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
 
-        condition = true;
-        while(condition) {
-            System.out.print("Please input the street: ");
-            add.addStreet(sc.next());
-            condition = false;
-        }
+        return s;
+    } // end of method
 
-        condition = true;
-        while(condition) {
-            System.out.print("Please input the street number: ");
-            try {
-                add.addStreetNum(Integer.parseInt(sc.next()));
-                condition = false;
-            } catch(NumberFormatException e) {
-                System.out.println("This was not a number, please try again");
-                condition = true;
-            }
-        }
+    
+    // Taking input from user and parsing to int, handles
+    // errors using .matches if input isn't numbers.
+    public static int inputInt() {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
 
-        condition = true;
-        while(condition) {
-            System.out.print("Please input the postal code: ");
-            try {
-                add.addPostCode(Integer.parseInt(sc.next()));
-                condition = false;
-            } catch(NumberFormatException e) {
-                System.out.println("This was not a number, please try again");
-                condition = true;
-            }
-        }
+        // Checks if String matches the given regular expression
+        while(!s.matches("[0-9]+")) {
+            System.out.print("Invalid input, only numbers allowed. " +
+                             "Try again \n>");
+            
+            s = sc.nextLine();
+        } // end of while
 
-        condition = true;
-        while(condition) {
-            System.out.print("Please input the town: ");
-            add.addTown(sc.next());
-            condition = false;
-        }
-
-        condition = true;
-        while(condition) {
-            System.out.print("Please input the country: ");
-            add.addCountry(sc.next());
-            condition = false;
-        }
-
-        return add;
-    }
-
-}
+        return Integer.parseInt(s);
+    } // end of method
+    
+} // end of class
