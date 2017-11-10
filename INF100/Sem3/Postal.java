@@ -94,17 +94,15 @@ class Postal {
     
     // Method for writing all parcels to file, given filename
     public static void parcelsToFile(ArrayList<Parcel> arrL, String filename) {
-        PrintWriter writer = null;
-
         try {
-            writer = new PrintWriter(filename);
+            PrintWriter writer = new PrintWriter(filename, "UTF-8");
             
             for(int i = 0; i < arrL.size(); i++) {
-                writer.println(arrL.get(i) + "\n");
+                writer.write(arrL.get(i) + "\n");
             }
-
+            
             writer.close();
-        
+            
         } catch(IOException e) {
             System.out.println("Something went wrong when writing the file.\n");
             e.printStackTrace();
