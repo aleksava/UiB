@@ -1,0 +1,121 @@
+CREATE TABLE Amino_acid_properties
+(
+  Name VARCHAR (20),
+  Molecular_mass SMALLINT,  
+  Polarity VARCHAR (20),
+  Charge VARCHAR (20),
+  CONSTRAINT Name_pk PRIMARY KEY (Name)
+);
+
+CREATE TABLE Nucleotides
+(
+  Symbol CHAR (1),  
+  Name varchar (20),
+  Type VARCHAR (20),
+  CONSTRAINT symbol_pk PRIMARY KEY (symbol)
+);
+
+CREATE TABLE Codons
+(
+  Codon_id VARCHAR (3),
+  Codon_sequence CHAR (3),
+  Position1 CHAR (1),
+  Position2 CHAR (1),
+  Position3 CHAR (1),
+  Amino_acid_id VARCHAR (3),
+  CONSTRAINT Codon_id_pk PRIMARY KEY (Codon_id),
+  CONSTRAINT Position1_fk FOREIGN KEY (Position1) REFERENCES Nucleotides (Symbol),
+  CONSTRAINT Position2_fk FOREIGN KEY (Position2) REFERENCES Nucleotides (Symbol),
+  CONSTRAINT Position3_fk FOREIGN KEY (Position3) REFERENCES Nucleotides (Symbol)
+);
+
+insert into Amino_acid_properties values ('Alanine', '89', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Cysteine', '121', 'polar', 'uncharged');
+insert into Amino_acid_properties values ('Aspartic acid', '132', 'polar', 'negative');
+insert into Amino_acid_properties values ('Glutamic acid', '146', 'polar', 'negative');
+insert into Amino_acid_properties values ('Phenylalanine', '165', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Glycine', '75', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Histidine', '155', 'polar', 'positive');
+insert into Amino_acid_properties values ('Isoleucine', '131', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Lysine', '147', 'polar', 'positive');
+insert into Amino_acid_properties values ('Leucine', '131', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Methionine', '149', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Asparagine', '132', 'polar', 'uncharged');
+insert into Amino_acid_properties values ('Proline', '115', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Glutamine', '146', 'polar', 'uncharged');
+insert into Amino_acid_properties values ('Arginine', '175', 'polar', 'positive');
+insert into Amino_acid_properties values ('Serine', '105', 'polar', 'uncharged');
+insert into Amino_acid_properties values ('Threonine', '119', 'polar', 'uncharged');
+insert into Amino_acid_properties values ('Valine', '117', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Tryptophan', '204', 'non polar', 'uncharged');
+insert into Amino_acid_properties values ('Tyrosine', '181', 'polar', 'uncharged');
+
+insert into Nucleotides values ('A', 'Adenine', 'Purine');
+insert into Nucleotides values ('C', 'Cytosine', 'Pyrimidine');
+insert into Nucleotides values ('G', 'Guanine', 'Purine');
+insert into Nucleotides values ('T', 'Thymine', 'Pyrimidine');
+
+insert into Codons values ('c1', 'TTT ', 'T', 'T', 'T', 'a5');
+insert into Codons values ('c2', 'TTC ', 'T', 'T', 'C', 'a5');
+insert into Codons values ('c3', 'TTA ', 'T', 'T', 'A', 'a10');
+insert into Codons values ('c4', 'TTG ', 'T', 'T', 'G', 'a10');
+insert into Codons values ('c5', 'CTT ', 'C', 'T', 'T', 'a10');
+insert into Codons values ('c6', 'CTC ', 'C', 'T', 'C', 'a10');
+insert into Codons values ('c7', 'CTA ', 'C', 'T', 'A', 'a10');
+insert into Codons values ('c8', 'CTG ', 'C', 'T', 'G', 'a10');
+insert into Codons values ('c9', 'ATT ', 'A', 'T', 'T', 'a8');
+insert into Codons values ('c10', 'ATC ', 'A', 'T', 'C', 'a8');
+insert into Codons values ('c11', 'ATA ', 'A', 'T', 'A', 'a8');
+insert into Codons values ('c12', 'ATG', 'A', 'T', 'G', 'a11');
+insert into Codons values ('c13', 'GTT ', 'G', 'T', 'T', 'a18');
+insert into Codons values ('c14', 'GTC ', 'G', 'T', 'C', 'a18');
+insert into Codons values ('c15', 'GTA ', 'G', 'T', 'A', 'a18');
+insert into Codons values ('c16', 'GTG ', 'G', 'T', 'G', 'a18');
+insert into Codons values ('c17', 'TCT ', 'T', 'C', 'T', 'a16');
+insert into Codons values ('c18', 'TCC ', 'T', 'C', 'C', 'a16');
+insert into Codons values ('c19', 'TCA ', 'T', 'C', 'A', 'a16');
+insert into Codons values ('c20', 'TCG ', 'T', 'C', 'G', 'a16');
+insert into Codons values ('c21', 'CCT ', 'C', 'C', 'T', 'a13');
+insert into Codons values ('c22', 'CCC ', 'C', 'C', 'C', 'a13');
+insert into Codons values ('c23', 'CCA ', 'C', 'C', 'A', 'a13');
+insert into Codons values ('c24', 'CCG ', 'C', 'C', 'G', 'a13');
+insert into Codons values ('c25', 'ACT ', 'A', 'C', 'T', 'a17');
+insert into Codons values ('c26', 'ACC ', 'A', 'C', 'C', 'a17');
+insert into Codons values ('c27', 'ACA ', 'A', 'C', 'A', 'a17');
+insert into Codons values ('c28', 'ACG ', 'A', 'C', 'G', 'a17');
+insert into Codons values ('c29', 'GCT ', 'G', 'C', 'T', 'a1');
+insert into Codons values ('c30', 'GCC ', 'G', 'C', 'C', 'a1');
+insert into Codons values ('c31', 'GCA ', 'G', 'C', 'A', 'a1');
+insert into Codons values ('c32', 'GCG ', 'G', 'C', 'G', 'a1');
+insert into Codons values ('c33', 'TAT ', 'T', 'A', 'T', 'a20');
+insert into Codons values ('c34', 'TAC ', 'T', 'A', 'C', 'a20');
+insert into Codons values ('c35', 'TAA ', 'T', 'A', 'A', 'a21');
+insert into Codons values ('c36', 'TAG ', 'T', 'A', 'G', 'a22');
+insert into Codons values ('c37', 'CAT ', 'C', 'A', 'T', 'a7');
+insert into Codons values ('c38', 'CAC ', 'C', 'A', 'C', 'a7');
+insert into Codons values ('c39', 'CAA ', 'C', 'A', 'A', 'a14');
+insert into Codons values ('c40', 'CAG ', 'C', 'A', 'G', 'a14');
+insert into Codons values ('c41', 'AAT ', 'A', 'A', 'T', 'a12');
+insert into Codons values ('c42', 'AAC ', 'A', 'A', 'C', 'a12');
+insert into Codons values ('c43', 'AAA ', 'A', 'A', 'A', 'a9');
+insert into Codons values ('c44', 'AAG ', 'A', 'A', 'G', 'a9');
+insert into Codons values ('c45', 'GAT ', 'G', 'A', 'T', 'a3');
+insert into Codons values ('c46', 'GAC ', 'G', 'A', 'C', 'a3');
+insert into Codons values ('c47', 'GAA ', 'G', 'A', 'A', 'a4');
+insert into Codons values ('c48', 'GAG ', 'G', 'A', 'G', 'a4');
+insert into Codons values ('c49', 'TGT ', 'T', 'G', 'T', 'a2');
+insert into Codons values ('c50', 'TGC ', 'T', 'G', 'C', 'a2');
+insert into Codons values ('c51', 'TGA ', 'T', 'G', 'A', 'a23');
+insert into Codons values ('c52', 'TGG ', 'T', 'G', 'G', 'a19');
+insert into Codons values ('c53', 'CGT ', 'C', 'G', 'T', 'a15');
+insert into Codons values ('c54', 'CGC ', 'C', 'G', 'C', 'a15');
+insert into Codons values ('c55', 'CGA ', 'C', 'G', 'A', 'a15');
+insert into Codons values ('c56', 'CGG ', 'C', 'G', 'G', 'a15');
+insert into Codons values ('c57', 'AGT ', 'A', 'G', 'T', 'a16');
+insert into Codons values ('c58', 'AGC ', 'A', 'G', 'C', 'a16');
+insert into Codons values ('c59', 'AGA ', 'A', 'G', 'A', 'a15');
+insert into Codons values ('c60', 'AGG ', 'A', 'G', 'G', 'a15');
+insert into Codons values ('c61', 'GGT ', 'G', 'G', 'T', 'a6');
+insert into Codons values ('c62', 'GGC ', 'G', 'G', 'C', 'a6');
+insert into Codons values ('c63', 'GGA ', 'G', 'G', 'A', 'a6');
+insert into Codons values ('c64', 'GGG ', 'G', 'G', 'G', 'a6');

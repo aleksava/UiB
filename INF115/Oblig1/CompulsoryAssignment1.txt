@@ -1,0 +1,133 @@
+This is the first compulsory assingment in the course INF115, spring 2018, at UiB
+Completed by Aleksander Våge, username: yad009
+
+Problem 1: Single Table Queries (25%)
+
+        a) Write a queriy to count the number of codons
+                 SELECT COUNT(*)
+                 FROM Codons;
+                 
+        b) Display all of the positively charged amino acids with a mass greater than 150.
+                 SELECT *
+                 FROM Amino_acid_properties
+                 WHERE (Molecular_mass > 150 AND Charge = "positive");
+                 
+        c) Show all of the nucleotides of the "Purine" type, sorted alphabetically by nucleotide symbol
+                 SELECT *
+                 FROM Nucleotides
+                 WHERE Type = "Purine"
+                 ORDER BY Symbol;
+                 
+        d) Select all Codon_sequences that have the same nucleotide in positions 2 and 3
+                 SELECT *
+                 FROM Codons
+                 WHERE Position2 = Position3;
+                 
+        e) Show the Codon_sequence and Amino_acid_id of amino acids encoded by just a single codon
+                 SELECT Codon_sequence, Amino_acid_id
+                 FROM Amino_acid_nomencalture
+                 WHERE ...
+
+
+Problem 2: Creating tables and modifying tables (25%)
+
+        a) Create the Amino_acid_nomenclature table, select data types that you think best represent the data
+           (see table below). Include the primary key and foreign key (be careful of the null values for the stop
+           codons in the Name field).
+                 CREATE TABLE Amino_acid_nomenclature (
+                              Amino_id    VARCHAR(3),
+                              Symbol      CHAR(1),
+                              Name        VARCHAR(20),
+                              Code        VARCHAR(4),
+                              CONSTRAINT  AminoPK
+                                 PRIMARY KEY (Amino_id),
+                              CONSTRAINT  NameFK
+                                 FOREIGN KEY (Name)
+                                 REFERENCES Amino_acid_properties(Name));
+                                 
+        b) Insert the values for the Amino_acid_nomenclature data from the table below, into
+           the table in the database.
+                 INSERT INTO Amino_acid_nomenclature (Amino_id, Symbol, Name, Code)
+                 VALUES ('a1', 'A', 'Alanine', 'Ala'),
+                        ('a2', 'C', 'Cysteine', 'Cys'),
+                        ('a3', 'D', 'Aspartic acid', 'Asp'),
+                        ('a4', 'E', 'Glutamic acid', 'Glu'),
+                        ('a5', 'F', 'Phenylalanine', 'Phe'),
+                        ('a6', 'G', 'Glycine', 'Gly'),
+                        ('a7', 'H', 'Histidine', 'His'),
+                        ('a8', 'I', 'Isoleucine', 'Ile'),
+                        ('a9', 'K', 'Lysine', 'Lys'),
+                        ('a10', 'L', 'Leucine', 'Ley'),
+                        ('a11', 'M', 'Methionine', 'Met'),
+                        ('a12', 'N', 'Asparagine', 'Asn'),
+                        ('a13', 'P', 'Proline', 'Pro'),
+                        ('a14', 'Q', 'Glutamine', 'Gln'),
+                        ('a15', 'R', 'Arginine', 'Arg'),
+                        ('a16', 'S', 'Serine', 'Ser'),
+                        ('a17', 'T', 'Threonine', 'Thr'),
+                        ('a18', 'V', 'Valine', 'Val'),
+                        ('a19', 'W', 'Tryptophan', 'Trp'),
+                        ('a20', 'Y', 'Tyrosine', 'Tyr'),
+                        ('a21', null, null, 'Stop'),
+                        ('a22', null, null, 'Stop'),
+                        ('a23', null, null, 'Stop');
+                        
+        c) Add the following constraint rules to the Amino_acid_properties table:
+                 i)  Molecular_mass, should be greater than 70 and less than 210
+                 ii) Charge should be one of "uncharged", "positive", or "negative"
+
+                 ALTER TABLE Amino_acid_properties
+                 ADD CONSTRAINT CHK_Mass (Molecular_mass > 70 AND Molecular_mass < 210);
+                 ALTER TABLE Amino_acid_properties
+                 ADD CONSTRAINT CHK_Charge (Charge='uncharged' OR Charge='positive' OR Charge='negative');
+                 
+        d) Add a foreign key to the Codons table referncing the amino_acid_id in the Amino_acid_nomenclature table
+                 ALTER TABLE Codons
+                 ADD CONSTRAINT FK_AminoID
+                 FOREIGN KEY (Amino_acid_id) REFERENCES Amino_acid_nomenclature (Amino_acid_id)
+
+
+Problem 3: Multiple table queries (25%)
+
+        a) List all of the codons encoding a stop signal (that do not code for an amino acid)
+                 SELECT * FROM Codons AS C INNER JOIN Amino_acid_nomenclature AS AN
+                 ON C.Amino_acid_id = AN.Amino_acid_id
+                 WHERE AN.Code='Stop';
+
+        b) Display all of the Codon_sequence(s) that start with a nucleotide called Cytosine
+                 SELECT Codon_sequence
+                 FROM Codons AS C INNER JOIN Nucleotides AS N
+                 ON C.Symbol = N.Symbol
+                 WHERE N.Name='Cytosine';
+
+        c) Write a query to return the Codon_sequence for all amino acids sorted from smallest to hightest
+           molecular mass
+                 SELECT Codon_sequence
+                 FROM Codons AS C INNER JOIN
+                      (Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
+                       ON AN.Name = AP.Name)
+                 ON C.Amino_acid_id = AN.Amino_acid_id
+                 ORDER BY AP.Molecular_mass ASC;
+
+        d) Count the number of uncharged amino acids where the Codon_sequence ends with an A
+                 SELECT COUNT(*)
+                 FROM Codons AS C INNER JOIN
+                      ((Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
+                       ON AN.Name = AP.Name))
+                 ON C.Amino_acid_id = AN.Amino_acid_id
+                 WHERE (AP.Charge='uncharged' AND RIGHT(C.Codon_sequence, 1)='A')
+
+        e) List the Codon_sequence and the amino acid Names for uncharged amino acids with a molecular mass
+           between 130 and 150
+                 SELECT C.Codon_sequence, AP.Name
+                 FROM Codons AS C INNER JOIN
+                      ((Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
+                       ON AN.Name = AP.Name))
+                 ON C.Amino_acid_id = AN.Amino_acid_id
+                 WHERE (AP.Charge='uncharged' AND (AP.Molecular-mass BETWEEN 130 AND 150));
+
+
+Problem 4: Advanced queries (25%)
+
+        a) Return a count of the number of nucleotides that are purines and the number that are pyrimidines
+                 SELECT COUNT() AS Purines 
