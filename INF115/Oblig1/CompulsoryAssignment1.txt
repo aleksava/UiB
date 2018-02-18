@@ -25,8 +25,8 @@ Problem 1: Single Table Queries (25%)
                  
         e) Show the Codon_sequence and Amino_acid_id of amino acids encoded by just a single codon
                  SELECT Codon_sequence, Amino_acid_id
-                 FROM Amino_acid_nomencalture
-                 WHERE ...
+                 FROM Codons
+                 GROUP BY Amino_acid_id HAVING COUNT(Amino_acid_id)=1
 
 
 Problem 2: Creating tables and modifying tables (25%)
@@ -35,11 +35,11 @@ Problem 2: Creating tables and modifying tables (25%)
            (see table below). Include the primary key and foreign key (be careful of the null values for the stop
            codons in the Name field).
                  CREATE TABLE Amino_acid_nomenclature (
-                              Amino_id    VARCHAR(3),
-                              Symbol      CHAR(1),
-                              Name        VARCHAR(20),
-                              Code        VARCHAR(4),
-                              CONSTRAINT  AminoPK
+                              Amino_acid_id    VARCHAR(3),
+                              Symbol           CHAR(1),
+                              Name             VARCHAR(20),
+                              Code             VARCHAR(4),
+                              CONSTRAINT       AminoPK
                                  PRIMARY KEY (Amino_id),
                               CONSTRAINT  NameFK
                                  FOREIGN KEY (Name)
@@ -47,7 +47,7 @@ Problem 2: Creating tables and modifying tables (25%)
                                  
         b) Insert the values for the Amino_acid_nomenclature data from the table below, into
            the table in the database.
-                 INSERT INTO Amino_acid_nomenclature (Amino_id, Symbol, Name, Code)
+                 INSERT INTO Amino_acid_nomenclature (Amino_acid_id, Symbol, Name, Code)
                  VALUES ('a1', 'A', 'Alanine', 'Ala'),
                         ('a2', 'C', 'Cysteine', 'Cys'),
                         ('a3', 'D', 'Aspartic acid', 'Asp'),
@@ -77,9 +77,9 @@ Problem 2: Creating tables and modifying tables (25%)
                  ii) Charge should be one of "uncharged", "positive", or "negative"
 
                  ALTER TABLE Amino_acid_properties
-                 ADD CONSTRAINT CHK_Mass (Molecular_mass > 70 AND Molecular_mass < 210);
+                 ADD CONSTRAINT CHK_Mass CHECK ((Molecular_mass > 70) AND (Molecular_mass < 210));
                  ALTER TABLE Amino_acid_properties
-                 ADD CONSTRAINT CHK_Charge (Charge='uncharged' OR Charge='positive' OR Charge='negative');
+                 ADD CONSTRAINT CHK_Charge CHECK (Charge='uncharged' OR Charge='positive' OR Charge='negative');
                  
         d) Add a foreign key to the Codons table referncing the amino_acid_id in the Amino_acid_nomenclature table
                  ALTER TABLE Codons
@@ -97,7 +97,7 @@ Problem 3: Multiple table queries (25%)
         b) Display all of the Codon_sequence(s) that start with a nucleotide called Cytosine
                  SELECT Codon_sequence
                  FROM Codons AS C INNER JOIN Nucleotides AS N
-                 ON C.Symbol = N.Symbol
+                 ON C.Position1 = N.Symbol
                  WHERE N.Name='Cytosine';
 
         c) Write a query to return the Codon_sequence for all amino acids sorted from smallest to hightest
@@ -121,13 +121,39 @@ Problem 3: Multiple table queries (25%)
            between 130 and 150
                  SELECT C.Codon_sequence, AP.Name
                  FROM Codons AS C INNER JOIN
-                      ((Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
-                       ON AN.Name = AP.Name))
+                      (Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
+                       ON AN.Name = AP.Name)
                  ON C.Amino_acid_id = AN.Amino_acid_id
-                 WHERE (AP.Charge='uncharged' AND (AP.Molecular-mass BETWEEN 130 AND 150));
+                 WHERE (AP.Charge='uncharged' AND (AP.Molecular_mass BETWEEN 130 AND 150));
 
 
 Problem 4: Advanced queries (25%)
 
         a) Return a count of the number of nucleotides that are purines and the number that are pyrimidines
-                 SELECT COUNT() AS Purines 
+                 SELECT COUNT(*) Total,
+		        (SELECT COUNT(*) FROM Codons WHERE Position1='A' OR Position1='G') + 
+		        (SELECT COUNT(*) FROM Codons WHERE Position2='A' OR Position2='G') +
+		        (SELECT COUNT(*) FROM Codons WHERE Position3='A' OR Position3='G') Purines, 
+		        (SELECT COUNT(*) FROM Codons WHERE Position1='C' OR Position1='T') + 
+		        (SELECT COUNT(*) FROM Codons WHERE Position2='C' OR Position2='T') +
+		        (SELECT COUNT(*) FROM Codons WHERE Position3='C' OR Position3='T') Pyrimidines
+                 FROM Codons
+                 
+        b) List the Amino acid symbol for all Codon_sequences composed of just a single nucleotide, sort
+           these by amino acid name
+                 SELECT AN.Symbol
+                 FROM Codons AS C INNER JOIN Amino_acid_nomenclature AS AN 
+                 ON C.Amino_acid_id = AN.Amino_acid_id
+                 WHERE C.Position1=C.Position2 AND C.Position2=C.Position3
+                 ORDER BY AN.Name ASC;
+                
+        c) Write a query to display the Codon_sequence for all the polar amino acids with a name that finishes
+           with 'ine', where the first nucleotide in the codon is a purine
+                 SELECT Codon_sequence
+                 FROM Codons AS C 
+                 INNER JOIN (Amino_acid_nomenclature AS AN INNER JOIN Amino_acid_properties AS AP
+                 ON AN.Name = AP.Name) ON C.Amino_acid_id = AN.amino_acid_id
+                 INNER JOIN Nucleotides AS N ON C.Position1=N.Symbol
+                 WHERE (AP.Polarity="polar" AND RIGHT(AP.Name, 3)='ine' AND N.Type="Purine" )
+
+        d) Make a count of how many of the codons would result in a polar or nonpolar amino acids
