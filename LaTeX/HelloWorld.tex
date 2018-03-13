@@ -1,0 +1,93 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lipsum}
+%\usepackage[utf8]{inputenc}
+
+\title{Test document}
+\author{Aleksander V\aa ge \\ \url{Alek@vage.com}}
+\date{13. March 2018}
+
+\begin{document}
+
+\pagestyle{fancy}
+\lhead{\today}
+\chead{}
+\rhead{Test Document}
+\lfoot{}
+\cfoot{}
+\rfoot{\thepage}
+
+\renewcommand{\familydefault}{\sfdefault}
+\fontfamily{cmss}\selectfont
+
+\maketitle
+\tableofcontents
+\newpage
+
+Hello World! \LaTeX
+
+This is where I can write some preamble text. \footnote{First footnote.}\footnote{Second footnote.}
+
+\section{Text for the first section}
+\lipsum[1]
+
+\subsection{Text for a subsection of the first section}
+\lipsum[2-3]
+\label{labelone}
+
+\subsection{Another subsection of the first section, not a subsubsection}
+\lipsum[4-5]
+\label{labeltwo}
+
+\section{The second section}
+\lipsum[6]
+
+Refer again to \ref{labelone}.
+Note also the discussion on page \pageref{labeltwo}
+
+\subsection{Title of the first subsection of the second section}
+\lipsum[7]
+
+
+\section{The mathematics section}
+There are $\binom{2n+1}{n}$ sequences with $n$ occurrences of $-1$ and $n+1$ occurrences of $+1$, and Raneys's lemma tells us that exactly $1/(2n+1)$ of these sequences have all partial sums positive.
+
+\subsection{Elementary calculus}
+Elementary cacluclus suffices to evaluate $C$ if we are clever enough to look at the double integral
+\begin{equation*}
+  C^2
+  = \int_{-\infty}^{+\infty} e^{-x^2} \mathrm{d}x
+  \int_{-\infty}^{+\infty} e^{-y^2} \mathrm{d}y\;.
+\end{equation*}
+
+\subsubsection{Task 1}
+Solve the following recurrence for $n, k\geq 0$:
+\begin{align*}
+  Q_{n,0} &= 1
+  \quad Q_{0,k} = [k=0]; \\
+  q_{n,k} &= Q_{n-1,k}+Q_{n-1,k-1}+\binom{n}{k}, \quad\text{for $n, k>0$.}
+\end{align*}
+
+\subsubsection{Examples of AMS Symbols}
+Therefore
+\begin{equation*}
+  a\equiv b\pmod{m}
+  \qquad\Longleftrightarrow\qquad
+  a\equiv b \pmod{p^{m_p}}\quad\text{for all $p$}
+\end{equation*}
+if the prime factorization of $m$ is $\prod_p p^{m_p}$
+
+\begin{thebibliography}{9}
+  
+\bibitem{ConcreteMath}
+  Ronald L. Graham, Donald E. Knuth, and Oren Patashnik,
+  \textit{Concrete Mathematics},
+  Addison-Wesley, Reading, MA, 1995.
+  
+\end{thebibliograhy}
+
+\end{document}
