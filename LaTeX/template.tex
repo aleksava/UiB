@@ -1,0 +1,150 @@
+% ================================== HEADER ====================================
+\documentclass{article}           % Sets style/look of many things.
+% \documentclass{report}          % part, chapters, front page etc.
+\usepackage[utf8]{inputenc}       % Encoding of input files UTF-8
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{beramono}     % Font
+\usepackage{color}                % Color text
+\usepackage{titlesec}             % Select alternative section titles
+\usepackage{fancyvrb}
+\usepackage{verbatim}             % Comment environment
+\usepackage{listings}             % Format and render text/code etc.
+\usepackage{minted}               % Much better syntax highlighting
+\usepackage{float}                % Control of floating environment/figure
+\usepackage{graphicx,  subfigure} % Better figures, graphics, units etc.
+\usepackage{multicol}             % Multiple columns
+\usepackage{amsmath}              % Math: Equation, split, align etc.
+\usepackage{siunitx}              % SI units
+\usepackage{mathtools}            % Different math tools to use with amsmath
+\usepackage{amssymb}              % Math symbols
+\usepackage[
+    colorlinks,
+    citecolor=black,              % I like links with standard black color
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+]{hyperref}                       % Links in TOC etc.
+\usepackage[all]{hypcap}          % Better links to floating environment
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+\title{Simple \LaTeX \space Template}
+\author{Ole Herman Schumacher Elgesem}
+\date{\today}
+
+% Removing paragraph indents is sometimes useful:
+\setlength\parindent{0pt}
+
+% Make margins smaller to fit more figures, tables etc on page: (optional)
+\addtolength{\oddsidemargin}{-1.0in}
+\addtolength{\evensidemargin}{-1.0in}
+\addtolength{\textwidth}{2.0in}
+\addtolength{\topmargin}{-0.8in}
+\addtolength{\textheight}{1.6in}
+% ==============================================================================
+
+% ================================= EXAMPLES ===================================
+\begin{comment}
+
+% TABLE (TABULAR):
+\begin{table}[]
+\centering
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    Colors: & Red    & Green  & Blue \\ \hline
+    Red     & Red    & Yellow & Purple \\ \hline
+    Green   & Yellow & Green  & Cyan \\ \hline
+    Blue    & Purple & Cyan   & Blue \\ \hline
+  \end{tabular}
+  \caption{Caption}
+  \label{tab:my_label}
+\end{table}
+
+% FIGURE:
+The plot in figure \ref{fig:unique_name} clearly shows something important.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{figs/silicon.png}
+\caption{The caption explains the figure.}
+\label{fig:unique_name}
+\end{center}
+\end{figure}
+
+% EQUATION:
+\begin{equation}
+\frac{df}{dt} = \lim_{h \to 0}\frac{f(t+h)-f(t)}{h}
+\end{equation}
+
+% ALIGNED MATH:
+\begin{align*}
+    r      &= \sqrt{x^2 + y^2 + z^2} & x &= r\cos \theta \sin \phi \\
+    \theta &= \tan^-1(\frac{y}{x})   & y &= r\sin \theta \sin \phi \\
+    \phi   &= \cos^-1(\frac{z}{r})   & z &= r\cos \phi
+\end{align*}
+
+% CENTERED DISPLAY MODE MATH:
+\[ V_{th} = 0.45V \]
+
+% INLINE MATH:
+We used a supply voltage of 1.2 volts; \(V_{dd} = 1.2\text{V}\).
+
+% MATRIX:
+\[
+\begin{Bmatrix} % Curly brackets
+v_1 \\
+v_2
+\end{Bmatrix}
+= \begin{bmatrix} % Square brackets
+Z_{11} & Z_{12} \\
+Z_{21} & Z_{22}
+\end{bmatrix}
+\begin{Bmatrix}
+i_1 \\
+i_2
+\end{Bmatrix}
+\]
+
+% COLORS:
+\definecolor{orange}{RGB}{255,127,0}
+{\color{red} Red text.} {\color{orange} Orange text.}
+
+% SOURCE CODE:
+\inputminted{Python}{src/hello.py}
+
+% MULTIPLE COLUMNS:
+\begin{multicols}{2}
+Write text and add figures etc. Content will be automatically split. You can
+put figures, tables and even other multicols. Multiple columns can reduce
+wasted space in a document.
+\end{multicols}
+
+% FOOTNOTES:
+A simple footnote\footnote{Additional information} or
+footnotemark\footnotemark{} is more readable.
+\footnotetext{Footnotes are usefule for definitions, clarifications,
+background info, e-mail/website info etc.}
+
+\end{comment}
+% ==============================================================================
+
+% ================================= DOCUMENT ===================================
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section*{Introduction} % unnumbered section: \section*
+\LaTeX{} is a word processor and a document markup language.
+
+\section{Task 1 - A section}
+\subsection{First subtask - A subsection}
+\subsubsection{A part of solving task 1a - A subsubsection}
+Text in the subsubsection ( replace this $\ddot\smile$ ).
+
+\newpage
+\section{Another section}
+
+\section{Conclusion}
+
+\end{document}
+% ==============================================================================
